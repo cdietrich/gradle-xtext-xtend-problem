@@ -1,0 +1,36 @@
+sourceSets {
+	main {
+		java.srcDirs = ['src/main/java', 'src/main/xtext-gen', 'src/main/xtend-gen']
+		resources.srcDirs = ['src/main/resources', 'src/main/xtext-gen', 'src/main/xtend-gen']
+		xtendOutputDir = 'src/main/xtend-gen'
+	}
+	test {
+		java.srcDirs = ['src/test/java', 'src/test/xtext-gen']
+		resources.srcDirs = ['src/test/resources', 'src/test/xtext-gen']
+		xtendOutputDir = 'src/test/xtend-gen'
+	}
+}
+
+clean {
+	delete fileTree(dir: "src/main/xtext-gen", exclude: ".gitignore")
+	delete fileTree(dir: "src/test/xtext-gen", exclude: ".gitignore")
+	delete fileTree(dir: "src/main/xtend-gen", exclude: ".gitignore")
+	delete fileTree(dir: "src/test/xtend-gen", exclude: ".gitignore")
+}
+
+jar {
+	from('model') {
+		into('model')
+	}
+	manifest {
+		attributes 'Bundle-SymbolicName': project.name
+	}
+}
+
+plugins.withId('war') {
+	webAppDirName = "src/main/webapp"
+}
+
+plugins.withId('org.xtext.idea-plugin') {
+	assembleSandbox.metaInf.from('src/main/resources/META-INF')
+}
